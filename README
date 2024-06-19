@@ -6,7 +6,7 @@ Comparison of the novel governor with default executions shows consistent energy
 governor displaying potential for even larger eﬀiciency gains.
 
 Usage:
-    (1) download the python virtual environment using the link below and place in the outermost directory of this repository
+    (1) unzip the python virtual environment (.venv.zip) to the outermost project directory.
     (2) set the following environment variables:
             DEVICE_INDEX: to the index of the device you wish to benchmark. This can be found by querying nvidia-smi.
             GL_PROP: to the proportion of available graphics frequencies you wish to use for measurement and scaling.
@@ -25,6 +25,3 @@ If the RUN_TEMP environment variable is set to 1, the governor will also account
 Executing using the averaged results of multiple benchmark runs:
 Execute calculate_averages.sh to output averaged benchmark results.
 Set the USE_AVERAGES environment variable to 1 to use the averaged results of multiple benchmark runs as input for scaling.
-
-Link to download virtual environment:
-https://imperiallondon-my.sharepoint.com/:f:/g/personal/efw20_ic_ac_uk/EhKeR6XhyclAtMrmckDpYsoBEzKQOuC95keBhzT7g_mBdg?e=bMQPLk
