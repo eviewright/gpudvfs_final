@@ -1,8 +1,10 @@
 import argparse
+import os
 import time as tt
 import numpy as np
 import cupy as cp
 import pynvml
+from datetime import date
 from zeus.monitor import power as zeus_power
 from benchmark_threads import DenseMatMulThread, DenseTransposeThread
 from print_format import *
@@ -72,12 +74,12 @@ def run_benchmark():
                 graphics_load_level_index += 1
             suffix = str(device_index) + '_' + str(gl) + '_' + str(ml) + time_created()
             utils_combined = combine(np.array(utilisations_graphics[gl_index][ml_index]), np.array(utilisations_mem[gl_index][ml_index]))
-            create_latex_2D("results/energies_" + suffix, energies[gl_index][ml_index], gl, ml)
-            create_latex_2D("results/utils_" + suffix, utils_combined, gl, ml)
-            create_csv("results/energies_" + suffix, energies[gl_index][ml_index])
-            create_csv("results/utils_graphics_" + suffix, utilisations_graphics[gl_index][ml_index])
-            create_csv("results/utils_mem_" + suffix, utilisations_mem[gl_index][ml_index])
-            create_csv("results/execution_times_" + suffix, execution_times[gl_index][ml_index])
+            create_latex_2D(results_path + "energies_" + suffix, energies[gl_index][ml_index], gl, ml)
+            create_latex_2D(results_path + "utils_" + suffix, utils_combined, gl, ml)
+            create_csv(results_path + "energies_" + suffix, energies[gl_index][ml_index])
+            create_csv(results_path + "utils_graphics_" + suffix, utilisations_graphics[gl_index][ml_index])
+            create_csv(results_path + "utils_mem_" + suffix, utilisations_mem[gl_index][ml_index])
+            create_csv(results_path + "execution_times_" + suffix, execution_times[gl_index][ml_index])
     return energies, utilisations_graphics, utilisations_mem, execution_times
 
 def main(level_vals, device_index_val):
@@ -91,6 +93,10 @@ def main(level_vals, device_index_val):
     graphics_levels = level_vals[1:]
     num_graphics_levels = len(graphics_levels[0])
     num_mem_levels = len(mem_levels)
+
+    #initialise path for results
+    global results_path
+    results_path = "results/" + str(date.today())
 
     #initialise nvml and run benchmarks
     global device_index
@@ -109,14 +115,23 @@ def main(level_vals, device_index_val):
     pynvml.nvmlShutdown()
 
     #write to output files
-    suffix = str(device_index) + time_created()
+    device_str = str(device_index)
+    suffix = device_str + time_created()
     measured_utils_combined = combine(np.array(measured_utils_graphics), np.array(measured_utils_mem))
-    create_latex("results/energies_" + suffix, measured_energies, str(device_index))
-    create_latex("results/utils_" + suffix, measured_utils_combined, str(device_index))
-    create_csv_4D("results/energies_" + suffix, measured_energies)
-    create_csv_4D("results/utils_graphics_" + suffix, measured_utils_graphics)
-    create_csv_4D("results/utils_mem_" + suffix, measured_utils_mem)
-    create_csv_4D("results/execution_times" + suffix, execution_times)
+    create_latex(results_path + "energies_" + suffix, measured_energies, str(device_index))
+    create_latex(results_path + "utils_" + suffix, measured_utils_combined, str(device_index))
+    create_csv_4D(results_path + "energies_" + suffix, measured_energies)
+    create_csv_4D(results_path + "utils_graphics_" + suffix, measured_utils_graphics)
+    create_csv_4D(results_path + "utils_mem_" + suffix, measured_utils_mem)
+    create_csv_4D(results_path + "execution_times" + suffix, execution_times)
+
+    #update symlinks
+    os.unlink("results/energies_" + device_str + "-latest")
+    os.unlink("results/utils_graphics_" + device_str + "-latest")
+    os.unlink("results/utils_memory_" + device_str + "-latest")
+    os.symlink(results_path + "energies_" + suffix, "results/energies_" + device_str + "-latest")
+    os.symlink(results_path + "utils_graphics_" + suffix, "results/utils_graphics_" + device_str + "-latest")
+    os.symlink(results_path + "utils_mem_" + suffix, "results/utils_memory_" + device_str + "-latest")
 
 if __name__ == "__main__":
     #parse arguments

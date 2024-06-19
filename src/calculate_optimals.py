@@ -1,7 +1,7 @@
 import argparse
 import sys
 import numpy as np
-from benchmark.print_format import read_in_csv_4D, create_csv
+from print_format import read_in_csv_4D, create_csv
 
 epsilon = 0.1
 
@@ -128,11 +128,12 @@ if __name__ == "__main__":
     parser.add_argument("device", type=int, help="index of device to be profiled")
     parser.add_argument('-avg', '--average', action='store_true')
     args = parser.parse_args()
-
+    
     #read in benchmark results
+    print(args.average)
     device_str = str(args.device)
-    energies = read_in_csv_4D("energies_" + device_str) if args.average else read_in_csv_4D("energies_" + device_str)
-    utils_graphics = read_in_csv_4D("utils_graphics_average_" + device_str) if args.average else read_in_csv_4D("utils_graphics_" + device_str)
-    utils_mem = read_in_csv_4D("utils_memory_average_" + device_str) if args.average else read_in_csv_4D("utils_memory_" + device_str)
+    energies = read_in_csv_4D("results/energies_average_" + device_str) if args.average else read_in_csv_4D("results/energies_" + device_str + "-latest")
+    utils_graphics = read_in_csv_4D("results/utils_graphics_average_" + device_str) if args.average else read_in_csv_4D("results/utils_graphics_" + device_str + "-latest")
+    utils_mem = read_in_csv_4D("results/utils_memory_average_" + device_str) if args.average else read_in_csv_4D("results/utils_memory_" + device_str + "-latest")
     
     main(energies, utils_graphics, utils_mem, args.device)

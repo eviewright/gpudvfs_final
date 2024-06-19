@@ -1,0 +1,27 @@
+This codebase is part of an undergraduate Final Year Project at Imperial College London. It introduces a novel Dynamic Frequency Scaling method for 
+Graphics Processing Units (GPUs). Inspired by previous work for CPUs, precalculated energy eﬀiciency curves - which encapsulate the relationship 
+between frequency, utilisation, workload and energy consumption - are used to conduct scaling. 
+The result is a method of frequency governance capable of predicting optimal frequencies for an execution with minimal overhead. 
+Comparison of the novel governor with default executions shows consistent energy savings of up to 33 percent, with an temperature-aware extension of the 
+governor displaying potential for even larger eﬀiciency gains.
+
+Usage:
+    (1) download the python virtual environment from TODO and place in the outermost directory of this repository
+    (2) set the following environment variables:
+            DEVICE_INDEX: to the index of the device you wish to benchmark. This can be found by querying nvidia-smi.
+            GL_PROP: to the proportion of available graphics frequencies you wish to use for measurement and scaling.
+            ML_PROP: to the proportion of available memory frequencies you wish to use for measurement and scaling.
+    (3) execute device_profile.sh to produce the set of frequencies to be used for benchmarking and scaling
+    (4) execute run_benchmark.sh to run the benchmark. The benchmark takes just under an hour on average for each frequency pair.
+    (5) execute calculate_optimals.sh - this should output files utils_up_g, utils_low_g, utils_up_m, and utils_low_m for the
+        chosen device.
+    (6) execute run.sh to run the novel frequency governor. This will remain in execution until killed.
+
+All shell scripts are to be executed from the outermost directory of this repository and under a bash shell.
+
+Executing a temperature-aware governor: 
+If the RUN_TEMP environment variable is set to 1, the governor will also account for current GPU temperature while scaling.
+
+Executing using the averaged results of multiple benchmark runs:
+Execute calculate_averages.sh to output averaged benchmark results.
+Set the USE_AVERAGES environment variable to 1 to use the averaged results of multiple benchmark runs as input for scaling.
