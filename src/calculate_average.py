@@ -13,10 +13,10 @@ def main(device):
             return ((reduce(lambda x, y: x + y, [np.array(arr, dtype=(np.float64)) for arr in arrs])) / len(arrs))
 
         #locate all measurements of utilisation and energy consumption
-        utils_graphics_paths = glob.glob("results/*/utils_graphics_" + str(device) + "*.csv")
-        utils_mem_paths = glob.glob("results/*/utils_mem_" + str(device) + "*.csv")
-        energy_paths = glob.glob("results/*/energies_" + str(device) + "*.csv")
-        
+        utils_graphics_paths = glob.glob("results/utils_graphics_" + str(device) + "*.csv")
+        utils_mem_paths = glob.glob("results/utils_mem_" + str(device) + "*.csv")
+        energy_paths = glob.glob("results/energies_" + str(device) + "*.csv")
+
         #read in utilisations and energy consumptions
         all_utils_graphics = [read_in_csv_4D(u[:-4]) for u in utils_graphics_paths]
         all_utils_mem = [read_in_csv_4D(u[:-4]) for u in utils_mem_paths]

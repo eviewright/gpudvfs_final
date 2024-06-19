@@ -2,15 +2,15 @@
 
 source .venv/bin/activate
 
-if [ $USE_AVERAGES == 1 && $RUN_TEMP == 1 ]
+if [[ $USE_AVERAGES == 1 && $RUN_TEMP == 1 ]];
 then
-    sudo .venv/bin/python3 src/benchmark/gpu_dvfs.py $DEVICE_INDEX --usetemperature --average
-elif [ $USE_AVERAGES == 1 ]
+    sudo .venv/bin/python3 src/gpu_dvfs.py $DEVICE_INDEX --usetemperature --average
+elif [[ $USE_AVERAGES == 1 ]];
 then
-    sudo .venv/bin/python3 src/benchmark/gpu_dvfs.py $DEVICE_INDEX --average
-elif [ $RUN_TEMP == 1 ]
+    sudo .venv/bin/python3 src/gpu_dvfs.py $DEVICE_INDEX --average
+elif [[ $RUN_TEMP == 1 ]];
 then
-    sudo .venv/bin/python3 src/benchmark/gpu_dvfs.py $DEVICE_INDEX --usetemperature
+    sudo .venv/bin/python3 src/gpu_dvfs.py $DEVICE_INDEX --usetemperature
 else
-    sudo .venv/bin/python3 src/benchmark/gpu_dvfs.py $DEVICE_INDEX
+    sudo .venv/bin/python3 src/gpu_dvfs.py $DEVICE_INDEX
 fi

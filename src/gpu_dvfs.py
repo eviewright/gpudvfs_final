@@ -1,7 +1,7 @@
 import argparse
 import time as tt
 import pynvml
-from print_format import read_in_csv_4D, parse_profile
+from print_format import read_in_csv, parse_profile
 
 #constants
 gpu_clock = 0
@@ -73,9 +73,8 @@ def alter_frequency():
 
     #penalise for high temperature if using temperature-aware governor
     if account_temperature:
-        delta_g, delta_m = delta_for_temperature(new_graphics_level, new_mem_level)
+        delta_g = delta_for_temperature(new_graphics_level)
         new_graphics_level += delta_g
-        new_mem_level += delta_m
         previous_temperature = curr_temp
 
     #ensure that new level is valid
@@ -143,9 +142,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     #read in optimal utilisation boundaries
-    utils_low_g = read_in_csv_4D("utils_low_g_average_" + str(args.device)) if args.average else read_in_csv_4D("utils_low_g_" + str(args.device))
-    utils_low_m = read_in_csv_4D("utils_low_m_average_" + str(args.device)) if args.average else read_in_csv_4D("utils_low_m_" + str(args.device))
-    utils_up_g = read_in_csv_4D("utils_up_g_average_" + str(args.device)) if args.average else read_in_csv_4D("utils_up_g_" + str(args.device))
-    utils_up_m = read_in_csv_4D("utils_up_m_average_" + str(args.device)) if args.average else read_in_csv_4D("utils_up_m_" + str(args.device))
+    utils_low_g = read_in_csv("utils_low_g_average_" + str(args.device)) if args.average else read_in_csv("utils_low_g_" + str(args.device))
+    utils_low_m = read_in_csv("utils_low_m_average_" + str(args.device)) if args.average else read_in_csv("utils_low_m_" + str(args.device))
+    utils_up_g = read_in_csv("utils_up_g_average_" + str(args.device)) if args.average else read_in_csv("utils_up_g_" + str(args.device))
+    utils_up_m = read_in_csv("utils_up_m_average_" + str(args.device)) if args.average else read_in_csv("utils_up_m_" + str(args.device))
 
     main(parse_profile(args.device), utils_low_g, utils_low_m, utils_up_g, utils_up_m, args.device, args.usetemperature)

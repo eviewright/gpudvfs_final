@@ -6,7 +6,7 @@ from print_format import read_in_csv_4D, create_csv
 epsilon = 0.1
 
 #identify utils corresponding to highest efficiency for each combination style + load level
-def main(energies, utils_graphics, utils_mem, device):
+def main(energies, utils_graphics, utils_mem, device, average):
     (num_graphics_levels, num_mem_levels, num_graphics_load_levels, num_mem_load_levels) = np.shape(energies)
 
     optimals = [[(-1,-1) for _ in range(num_mem_load_levels)] for _ in range(num_graphics_load_levels)]
@@ -116,11 +116,12 @@ def main(energies, utils_graphics, utils_mem, device):
             utils_low_g[glx][mlx] = g_utils[opts_g_low[glx]][opts_m_low[mlx]]
             utils_low_m[glx][mlx] = m_utils[opts_g_low[glx]][opts_m_low[mlx]]
     
+    suffix = "average_" + str(device) if average else str(device)
     #write to output files
-    create_csv("utils_up_g_" + str(device), utils_up_g)
-    create_csv("utils_up_m_" + str(device), utils_up_m)
-    create_csv("utils_low_g_" + str(device), utils_low_g)
-    create_csv("utils_low_m_" + str(device), utils_low_m)
+    create_csv("utils_up_g_" + suffix, utils_up_g)
+    create_csv("utils_up_m_" + suffix, utils_up_m)
+    create_csv("utils_low_g_" + suffix, utils_low_g)
+    create_csv("utils_low_m_" + suffix, utils_low_m)
 
 if __name__ == "__main__":
     #parse arguments
@@ -130,10 +131,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     #read in benchmark results
-    print(args.average)
     device_str = str(args.device)
-    energies = read_in_csv_4D("results/energies_average_" + device_str) if args.average else read_in_csv_4D("results/energies_" + device_str + "-latest")
-    utils_graphics = read_in_csv_4D("results/utils_graphics_average_" + device_str) if args.average else read_in_csv_4D("results/utils_graphics_" + device_str + "-latest")
-    utils_mem = read_in_csv_4D("results/utils_memory_average_" + device_str) if args.average else read_in_csv_4D("results/utils_memory_" + device_str + "-latest")
+    energies = read_in_csv_4D("results/energy_average_" + device_str) if args.average else read_in_csv_4D("energies_" + device_str + "-latest")
+    utils_graphics = read_in_csv_4D("results/utils_average_graphics_" + device_str) if args.average else read_in_csv_4D("utils_graphics_" + device_str + "-latest")
+    utils_mem = read_in_csv_4D("results/utils_average_memory_" + device_str) if args.average else read_in_csv_4D("utils_memory_" + device_str + "-latest")
     
-    main(energies, utils_graphics, utils_mem, args.device)
+    main(energies, utils_graphics, utils_mem, args.device, args.average)

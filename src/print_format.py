@@ -57,7 +57,7 @@ def parse(s):
 # csv (de)formatting
 def create_csv(filename, arr):
     with open(filename + ".csv", 'x', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=',',
+        writer = csv.writer(csvfile, delimiter=' ',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerows(arr)
 
@@ -71,9 +71,9 @@ def create_csv_4D(filename, arr):
                 writer.writerow([])
             writer.writerow([])
 
-def read_in_csv(filename):
+def read_in_csv(filename, delim=' '):
     with open(filename + ".csv", 'r', newline='') as csvfile:
-        reader = csv.reader(csvfile)
+        reader = csv.reader(csvfile, delimiter=delim)
         arr = []
         for row in reader:
             arr_row = []

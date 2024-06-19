@@ -48,9 +48,10 @@ def run_benchmark():
     print("Starting benchmark...")
 
     for ml_index in range(num_mem_levels):
-        ml = mem_levels[ml_index]
+        ml = int(mem_levels[ml_index])
         for gl in graphics_levels[ml_index]:
             gl_index = graphics_levels[0].index(gl)
+            gl = int(gl)
             print("benchmarking: " + str(gl) + "MHz/" + str(ml) + "MHz")
             graphics_load_level_index = 0
             for mat_size in range(mat_min, mat_max, mat_step):
@@ -64,7 +65,7 @@ def run_benchmark():
                     tt.sleep(reset_period) #cooldown after matrix creation
                     pynvml.nvmlDeviceSetGpuLockedClocks(handle, gl, gl)
                     pynvml.nvmlDeviceSetMemoryLockedClocks(handle, ml, ml)
-                    graphics_util, mem_util, energy, time = measure_benchmark(mt, cpt, gl, ml)
+                    graphics_util, mem_util, energy, time = measure_benchmark(mt, cpt)
                     energies[gl_index][ml_index][graphics_load_level_index][mem_load_level_index] = energy
                     utilisations_graphics[gl_index][ml_index][graphics_load_level_index][mem_load_level_index] = graphics_util
                     utilisations_mem[gl_index][ml_index][graphics_load_level_index][mem_load_level_index] = mem_util 
@@ -74,12 +75,12 @@ def run_benchmark():
                 graphics_load_level_index += 1
             suffix = str(device_index) + '_' + str(gl) + '_' + str(ml) + time_created()
             utils_combined = combine(np.array(utilisations_graphics[gl_index][ml_index]), np.array(utilisations_mem[gl_index][ml_index]))
-            create_latex_2D(results_path + "energies_" + suffix, energies[gl_index][ml_index], gl, ml)
-            create_latex_2D(results_path + "utils_" + suffix, utils_combined, gl, ml)
-            create_csv(results_path + "energies_" + suffix, energies[gl_index][ml_index])
-            create_csv(results_path + "utils_graphics_" + suffix, utilisations_graphics[gl_index][ml_index])
-            create_csv(results_path + "utils_mem_" + suffix, utilisations_mem[gl_index][ml_index])
-            create_csv(results_path + "execution_times_" + suffix, execution_times[gl_index][ml_index])
+            create_latex_2D(results_path + "/energies_" + suffix, energies[gl_index][ml_index], gl, ml)
+            create_latex_2D(results_path + "/utils_" + suffix, utils_combined, gl, ml)
+            create_csv(results_path + "/energies_" + suffix, energies[gl_index][ml_index])
+            create_csv(results_path + "/utils_graphics_" + suffix, utilisations_graphics[gl_index][ml_index])
+            create_csv(results_path + "/utils_mem_" + suffix, utilisations_mem[gl_index][ml_index])
+            create_csv(results_path + "/execution_times_" + suffix, execution_times[gl_index][ml_index])
     return energies, utilisations_graphics, utilisations_mem, execution_times
 
 def main(level_vals, device_index_val):
@@ -97,6 +98,7 @@ def main(level_vals, device_index_val):
     #initialise path for results
     global results_path
     results_path = "results/" + str(date.today())
+    os.mkdir(results_path)
 
     #initialise nvml and run benchmarks
     global device_index
@@ -118,20 +120,20 @@ def main(level_vals, device_index_val):
     device_str = str(device_index)
     suffix = device_str + time_created()
     measured_utils_combined = combine(np.array(measured_utils_graphics), np.array(measured_utils_mem))
-    create_latex(results_path + "energies_" + suffix, measured_energies, str(device_index))
-    create_latex(results_path + "utils_" + suffix, measured_utils_combined, str(device_index))
-    create_csv_4D(results_path + "energies_" + suffix, measured_energies)
-    create_csv_4D(results_path + "utils_graphics_" + suffix, measured_utils_graphics)
-    create_csv_4D(results_path + "utils_mem_" + suffix, measured_utils_mem)
-    create_csv_4D(results_path + "execution_times" + suffix, execution_times)
+    create_latex("results/energies_" + suffix, measured_energies, str(device_index))
+    create_latex("results/utils_" + suffix, measured_utils_combined, str(device_index))
+    create_csv_4D("results/energies_" + suffix, measured_energies)
+    create_csv_4D("results/utils_graphics_" + suffix, measured_utils_graphics)
+    create_csv_4D("results/utils_mem_" + suffix, measured_utils_mem)
+    create_csv_4D("results/execution_times" + suffix, execution_times)
 
     #update symlinks
-    os.unlink("results/energies_" + device_str + "-latest")
-    os.unlink("results/utils_graphics_" + device_str + "-latest")
-    os.unlink("results/utils_memory_" + device_str + "-latest")
-    os.symlink(results_path + "energies_" + suffix, "results/energies_" + device_str + "-latest")
-    os.symlink(results_path + "utils_graphics_" + suffix, "results/utils_graphics_" + device_str + "-latest")
-    os.symlink(results_path + "utils_mem_" + suffix, "results/utils_memory_" + device_str + "-latest")
+    os.unlink("energies_" + device_str + "-latest")
+    os.unlink("utils_graphics_" + device_str + "-latest")
+    os.unlink("utils_memory_" + device_str + "-latest")
+    os.symlink("energies_" + suffix, "energies_" + device_str + "-latest")
+    os.symlink("utils_graphics_" + suffix, "utils_graphics_" + device_str + "-latest")
+    os.symlink("utils_mem_" + suffix, "utils_memory_" + device_str + "-latest")
 
 if __name__ == "__main__":
     #parse arguments
