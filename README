@@ -6,7 +6,7 @@ Comparison of the novel governor with default executions shows consistent energy
 governor displaying potential for even larger eﬀiciency gains.
 
 Usage:
-    (1) unzip the python virtual environment (.venv.zip) to the outermost project directory.
+    (1) download the python virtual environment (.venv.tar.xz) from the link below and unzip to the outermost project directory.
     (2) set the following environment variables:
             DEVICE_INDEX: to the index of the device you wish to benchmark. This can be found by querying nvidia-smi.
             GL_PROP: to the proportion of available graphics frequencies you wish to use for measurement and scaling.
