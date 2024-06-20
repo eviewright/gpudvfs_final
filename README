@@ -25,3 +25,5 @@ If the RUN_TEMP environment variable is set to 1, the governor will also account
 Executing using the averaged results of multiple benchmark runs:
 Execute calculate_averages.sh to output averaged benchmark results.
 Set the USE_AVERAGES environment variable to 1 to use the averaged results of multiple benchmark runs as input for scaling.
+
+Link for virtual environment download: https://imperiallondon-my.sharepoint.com/:u:/g/personal/efw20_ic_ac_uk/ESXvZ4_UMeRAh-9q9EmRFWcBcetA-lqK_TtAJrpr5OvhUA?e=GxBqAd
